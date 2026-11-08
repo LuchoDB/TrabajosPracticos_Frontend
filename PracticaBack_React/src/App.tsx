@@ -1,122 +1,61 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+{/*Practica 1*/}
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+interface Role{
+  id?: number;
+  name: string;
+}
+interface Pais{
+  id: number;
+  name: string;
 }
 
-export default App
+interface UserDetail{
+  id: number;
+  name: string;
+  email: string;
+  edad: number;
+  pais: Pais | string; //Si el pais no existe en la BD, recibo un string con el nombre del pais
+  roles: (Role | string[]); //Si el rol no existe en la BD, recibo un string con el nombre del rol
+}
+
+const [selectedId, setSelectedId] = useState<number | null>(null);
+const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
+
+useEffect(() => {
+  if (selectedId === null) return; //Si el id es null, no hago nada
+  fetch(`${import.meta.env.VITE_API_URL}/user/${selectedId}`, { //Esto es una peticion GET al endpoint user con el id seleccionado
+    headers: { Authorization: `Bearer ${token}` }, //Esto hace que espere la respuesta de la promesa de fetch
+  }).then(async (response) => { //Esto hace que espere la respuesta de la promesa de fetch, y luego se convierte en json
+    const data = await response.json(); //Lo convierte a json
+    if (!response.ok) { //Si la respuesta no es ok, lanzo un error
+      setError(data.detail);
+      return;
+    }
+    setSelectedUser(data);
+  });
+}, [selectedId, token]);
+
+<li key={user.id} onclick={() => setSelectedId(user.id)} style={{cursor: "pointer"}}>
+{user.name};
+</li>
+
+{selectedUser && (
+  <div>
+    <h3>Detalle de {selectedUser.name}</h3>
+    <p>Email: {selectedUser.email}</p>
+    <p>Edad: {selectedUser.edad}</p>
+    <p>Pais: {" "}
+      {typeof selectedUser.pais === "object"
+      ? selectedUser.pais.name
+    : selectedUser.pais}
+    </p>
+    <p>
+      Roles: {" "}
+      {selectedUser.roles
+      .map((r) => (typeof r === "string" ? r : r.name))
+      .join(", ")}
+      </p>
+  </div>
+)}
