@@ -89,41 +89,41 @@
     
     {/*Practica 3*/}
 
-    const [search, setSearch] = useState("");
+    // const [search, setSearch] = useState("");
 
-    async function handleSearch(){
-        if (!search.trim()) return;
-        setLoading(true);
-        setError(null);
+    // async function handleSearch(){
+    //     if (!search.trim()) return;
+    //     setLoading(true);
+    //     setError(null);
 
-        const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/user/search}/${encodeURIComponent(search)}`,
-            {
-                headers: {Authorization: `Bearer: ${token}`},
-            }
-        );
-        const data = await response.json;
-        setLoading(false);
+    //     const response = await fetch(
+    //         `${import.meta.env.VITE_API_URL}/user/search}/${encodeURIComponent(search)}`,
+    //         {
+    //             headers: {Authorization: `Bearer: ${token}`},
+    //         }
+    //     );
+    //     const data = await response.json;
+    //     setLoading(false);
 
-        if (!response.ok){
-            setError(data.detail);
-            return;
-        }
-        setUsers(data);
-        }
+    //     if (!response.ok){
+    //         setError(data.detail);
+    //         return;
+    //     }
+    //     setUsers(data);
+    //     }
 
-        function handleClear(){
-            setSearch("");
-            cargarUsuarion();
-        }
+    //     function handleClear(){
+    //         setSearch("");
+    //         cargarUsuario();
+    //     }
 
-        <div>
-            <input
-            type="text"
-            placeholder="Buscar por nombre..."
-            value={search}
-            onchange={(e) => setSearch(e.target.value)}
-            />
-            <button type="button" onClick={handleSearch}>Buscar</button>
-            <button type="button" onClick={handleClear}>Limpiar</button>
-        </div>
+    //     <div>
+    //         <input
+    //         type="text"
+    //         placeholder="Buscar por nombre..."
+    //         value={search}
+    //         onchange={(e) => setSearch(e.target.value)}
+    //         />
+    //         <button type="button" onClick={handleSearch}>Buscar</button>
+    //         <button type="button" onClick={handleClear}>Limpiar</button>
+    //     </div>
